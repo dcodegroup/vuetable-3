@@ -2,7 +2,7 @@
   <tr>
     <template v-for="(field, fieldIndex) in vuetable.tableFields">
       <template v-if="field.visible">
-        <template v-if="vuetable.isFieldComponent(field.name)">
+        <!-- <template v-if="vuetable.isFieldComponent(field.name)">
           <component
             :is="field.name"
             :row-field="field"
@@ -30,8 +30,8 @@
             v-html="renderTitle(field)"
             @click="onColumnHeaderClicked(field, $event)"
           ></th>
-        </template>
-        <template v-else>
+        </template> -->
+        <template>
           <th
             @click="onColumnHeaderClicked(field, $event)"
             :key="fieldIndex"
