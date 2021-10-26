@@ -1,11 +1,9 @@
 {
-  "name": "vuetable-3",
-  "version": "3.3.4",
+  "name": "@dcodegroup-au/vuetable-3",
+  "version": "4.0.0",
   "private": false,
   "description": "Datatable component for Vue 2.x",
-  "author": {
-    "name": "Manuel Yang"
-  },
+  "author": "Manuel Yang",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -164,9 +162,12 @@
       "git add"
     ]
   },
-  "readme": "https://github.com/mannyyang/vuetable-3#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mannyyang/vuetable-3.git"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
   }
 }

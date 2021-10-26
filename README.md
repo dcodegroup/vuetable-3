@@ -1,5 +1,9 @@
 # vuetable-3 - data table simplify!
 
+## Fork
+
+We have forked this package for the time being until the docs catch up. Credit to (https://github.com/mannyyang/vuetable-3)
+
 # Documentation and Tutorial
 
 You can find the documentation for vuetable-3 [here](https://mannyyang.github.io/vuetable-3/)
@@ -14,7 +18,7 @@ If you any question, please post your questions in the "Issues" section. Be sure
 ## NPM
 
 ```shell
-npm install vuetable-3 --save
+npm install @dcodegroup-au/vuetable-3 --save
 ```
 
 # Contributions
