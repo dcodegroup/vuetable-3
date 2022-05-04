@@ -1,28 +1,28 @@
 <template>
   <div
     v-show="tablePagination && lastPage > firstPage"
-    :class="$_css.wrapperClass"
+    :class="customCss.wrapperClass"
   >
     <a
       @click="loadPage(firstPage)"
       :class="[
         'btn-nav',
-        $_css.linkClass,
-        isOnFirstPage ? $_css.disabledClass : ''
+        customCss.linkClass,
+        isOnFirstPage ? customCss.disabledClass : ''
       ]"
     >
-      <i v-if="$_css.icons.first != ''" :class="[$_css.icons.first]"></i>
+      <i v-if="customCss.icons.first != ''" :class="[customCss.icons.first]"></i>
       <span v-else>&laquo;</span>
     </a>
     <a
       @click="loadPage('prev')"
       :class="[
         'btn-nav',
-        $_css.linkClass,
-        isOnFirstPage ? $_css.disabledClass : ''
+        customCss.linkClass,
+        isOnFirstPage ? customCss.disabledClass : ''
       ]"
     >
-      <i v-if="$_css.icons.next != ''" :class="[$_css.icons.prev]"></i>
+      <i v-if="customCss.icons.next != ''" :class="[customCss.icons.prev]"></i>
       <span v-else>&nbsp;&lsaquo;</span>
     </a>
     <template v-if="notEnoughPages">
@@ -30,8 +30,8 @@
         <a
           @click="loadPage(i + firstPage)"
           :class="[
-            $_css.pageClass,
-            isCurrentPage(i + firstPage) ? $_css.activeClass : ''
+            customCss.pageClass,
+            isCurrentPage(i + firstPage) ? customCss.activeClass : ''
           ]"
           v-html="n"
         >
@@ -43,9 +43,9 @@
         <a
           @click="loadPage(windowStart + i + firstPage - 1)"
           :class="[
-            $_css.pageClass,
+            customCss.pageClass,
             isCurrentPage(windowStart + i + firstPage - 1)
-              ? $_css.activeClass
+              ? customCss.activeClass
               : ''
           ]"
           v-html="windowStart + n - 1"
@@ -57,22 +57,22 @@
       @click="loadPage('next')"
       :class="[
         'btn-nav',
-        $_css.linkClass,
-        isOnLastPage ? $_css.disabledClass : ''
+        customCss.linkClass,
+        isOnLastPage ? customCss.disabledClass : ''
       ]"
     >
-      <i v-if="$_css.icons.next != ''" :class="[$_css.icons.next]"></i>
+      <i v-if="customCss.icons.next != ''" :class="[customCss.icons.next]"></i>
       <span v-else>&rsaquo;&nbsp;</span>
     </a>
     <a
       @click="loadPage(lastPage)"
       :class="[
         'btn-nav',
-        $_css.linkClass,
-        isOnLastPage ? $_css.disabledClass : ''
+        customCss.linkClass,
+        isOnLastPage ? customCss.disabledClass : ''
       ]"
     >
-      <i v-if="$_css.icons.last != ''" :class="[$_css.icons.last]"></i>
+      <i v-if="customCss.icons.last != ''" :class="[customCss.icons.last]"></i>
       <span v-else>&raquo;</span>
     </a>
   </div>

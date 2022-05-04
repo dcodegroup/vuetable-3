@@ -68,14 +68,13 @@ export default {
     },
 
     css() {
-      return this.$parent.$_css;
+      return this.$parent.customCss;
     },
 
     vuetable() {
       return this.$parent;
     }
   },
-
   methods: {
     stripPrefix(name) {
       return name.replace(this.vuetable.fieldPrefix, "");
@@ -181,7 +180,6 @@ export default {
 
     renderTitle(field) {
       const title = this.getTitle(field);
-
       if (
         (title.length > 0 && this.isInCurrentSortGroup(field)) ||
         this.hasSortableIcon(field)

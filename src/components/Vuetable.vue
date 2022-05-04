@@ -1,14 +1,13 @@
 <template>
-  <div :class="$_css.tableWrapper">
+  <div :class="customCss.tableWrapper">
     <div class="vuetable-head-wrapper" v-if="isFixedHeader">
-      <table :class="['vuetable', $_css.tableClass, $_css.tableHeaderClass]">
+      <table :class="['vuetable', customCss.tableClass, customCss.tableHeaderClass]">
         <vuetable-col-group :is-header="true" />
         <thead>
           <slot name="tableHeader" :fields="tableFields">
-            <template v-for="(header, headerIndex) in headerRows">
+            <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
               <component
                 :is="header"
-                :key="headerIndex"
                 @vuetable:header-event="onHeaderEvent"
               ></component>
             </template>
@@ -26,8 +25,8 @@
         :class="[
           'vuetable',
           isFixedHeader ? 'fixed-header' : '',
-          $_css.tableClass,
-          $_css.tableBodyClass
+          customCss.tableClass,
+          customCss.tableBodyClass
         ]"
       >
         <vuetable-col-group />
@@ -368,7 +367,7 @@ export default {
       lastScrollPosition: 0,
       scrollBarWidth: "17px", //chrome default
       scrollVisible: false,
-      $_css: {}
+      customCss: {}
     };
   },
 
@@ -534,7 +533,7 @@ export default {
     },
 
     mergeCss() {
-      this.$_css = { ...CssSemanticUI.table, ...this.css };
+      this.customCss = { ...CssSemanticUI.table, ...this.css };
     },
 
     bodyClass(base, field) {
@@ -667,7 +666,7 @@ export default {
     },
 
     isFieldSlot(fieldName) {
-      return typeof this.$scopedSlots[fieldName] !== "undefined";
+      return typeof this.$slots[fieldName] !== "undefined";
     },
 
     titleCase(str) {

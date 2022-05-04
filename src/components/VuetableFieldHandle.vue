@@ -17,7 +17,7 @@ export default {
 
   computed: {
     css() {
-      return this.vuetable.$_css;
+      return this.vuetable.customCss;
     }
   },
 

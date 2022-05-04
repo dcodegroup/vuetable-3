@@ -25,6 +25,12 @@ export default {
     isHeader: {
       type: Boolean,
       default: false
+    },
+    fieldPrefix: {
+      type: String,
+      default() {
+        return 'vuetable-field-'
+      }
     }
   },
 
