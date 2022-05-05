@@ -1,8 +1,8 @@
 {
   "name": "@dcodegroup-au/vuetable-3",
-  "version": "4.0.3",
+  "version": "5.0.0",
   "private": false,
-  "description": "Datatable component for Vue 2.x",
+  "description": "Datatable component for Vue 3.x",
   "author": "Dcode Group",
   "scripts": {
     "serve": "vue-cli-service serve",
