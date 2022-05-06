@@ -3,6 +3,14 @@
 ## Fork
 
 We have forked this package for the time being until the docs catch up. Credit to (https://github.com/mannyyang/vuetable-3)
+## Versioning
+
+Below is a table outling the vue compability for the releases.
+
+| Version/Release | Vue Compatibility |
+| -----------     | -----------       |
+| 5.x.x           | 3.x.x             |
+| 4.x.x           | 2.x.x             |
 
 # Documentation and Tutorial
 
@@ -17,8 +25,14 @@ If you any question, please post your questions in the "Issues" section. Be sure
 # Usage
 ## NPM
 
+Vue 3.x.x Compatibility
 ```shell
 npm install @dcodegroup-au/vuetable-3 --save
+```
+
+Vue 2.x.x Compatibility
+```shell
+npm install @dcodegroup-au/vuetable-3@4.0.2 --save
 ```
 
 # Contributions
