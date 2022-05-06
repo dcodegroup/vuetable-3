@@ -33,9 +33,10 @@
         <vuetable-col-group />
         <thead v-if="!isFixedHeader">
           <slot name="tableHeader" :fields="tableFields">
-            <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
+            <template v-for="(header, headerIndex) in headerRows">
               <component
                 :is="header"
+                :key="headerIndex"
                 @vuetable:header-event="onHeaderEvent"
               ></component>
             </template>
@@ -49,9 +50,10 @@
           ></slot>
         </tfoot>
         <tbody v-cloak class="vuetable-body">
-          <template v-for="(item, itemIndex) in tableData" :key="itemIndex">
+          <template v-for="(item, itemIndex) in tableData">
             <tr
               :item-index="itemIndex"
+              :key="itemIndex"
               :class="onRowClass(item, itemIndex)"
               @click="onRowClicked(item, itemIndex, $event)"
               @dblclick="onRowDoubleClicked(item, itemIndex, $event)"
