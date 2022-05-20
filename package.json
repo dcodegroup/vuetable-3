@@ -1,6 +1,6 @@
 {
   "name": "@dcodegroup-au/vuetable-3",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "private": false,
   "description": "Datatable component for Vue 3.x",
   "author": "Dcode Group",

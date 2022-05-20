@@ -31,7 +31,6 @@
             @click="onColumnHeaderClicked(field, $event)"
           ></th>
         </template> -->
-        <template>
           <th
             @click="onColumnHeaderClicked(field, $event)"
             :key="fieldIndex"
@@ -40,7 +39,6 @@
             :style="{ width: field.width }"
             v-html="renderTitle(field)"
           ></th>
-        </template>
       </template>
     </template>
     <vuetable-col-gutter v-if="vuetable.scrollVisible" />
