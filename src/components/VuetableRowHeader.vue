@@ -31,16 +31,14 @@
             @click="onColumnHeaderClicked(field, $event)"
           ></th>
         </template> -->
-        <template>
-          <th
-            @click="onColumnHeaderClicked(field, $event)"
-            :key="fieldIndex"
-            :id="'_' + field.name"
-            :class="headerClass('vuetable-th', field)"
-            :style="{ width: field.width }"
-            v-html="renderTitle(field)"
-          ></th>
-        </template>
+        <th
+          @click="onColumnHeaderClicked(field, $event)"
+          :key="fieldIndex"
+          :id="'_' + field.name"
+          :class="headerClass('vuetable-th', field)"
+          :style="{ width: field.width }"
+          v-html="renderTitle(field)"
+        ></th>
       </template>
     </template>
     <vuetable-col-gutter v-if="vuetable.scrollVisible" />
