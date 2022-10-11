@@ -1,7 +1,8 @@
 <template>
   <div :class="customCss.tableWrapper">
     <div class="vuetable-head-wrapper" v-if="isFixedHeader">
-      <table :class="['vuetable', customCss.tableClass, customCss.tableHeaderClass]">
+      <table
+        :class="['vuetable', customCss.tableClass, customCss.tableHeaderClass]">
         <vuetable-col-group :is-header="true" />
         <thead>
           <slot name="tableHeader" :fields="tableFields">
@@ -47,7 +48,7 @@
             :data="tableData"
           ></slot>
         </tfoot>
-        <tbody v-cloak class="vuetable-body">
+        <tbody v-cloak class="vuetable-body" v-if="!isDraggable">
           <template v-for="(item, itemIndex) in tableData" :key="itemIndex">
             <tr
               :item-index="itemIndex"
@@ -56,12 +57,11 @@
               @dblclick="onRowDoubleClicked(item, itemIndex, $event)"
               @mouseover="onMouseOver(item, itemIndex, $event)"
             >
-              <template v-for="(field, fieldIndex) in tableFields">
+              <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
                 <template v-if="field.visible">
                   <template v-if="isFieldComponent(field.name)">
                     <component
                       :is="field.name.substr(25)"
-                      :key="fieldIndex"
                       :row-data="item"
                       :row-index="itemIndex"
                       :row-field="field"
@@ -73,8 +73,8 @@
                   </template>
                   <template v-else-if="isFieldSlot(field.name)">
                     <td
-                      :class="bodyClass('vuetable-slot', field)"
                       :key="fieldIndex"
+                      :class="bodyClass('vuetable-slot', field)"
                       :style="{ width: field.width }"
                     >
                       <slot
@@ -88,7 +88,6 @@
                   <template v-else>
                     <td
                       :class="bodyClass('vuetable-td-' + field.name, field)"
-                      :key="fieldIndex"
                       :style="{ width: field.width }"
                       v-html="renderNormalField(field, item)"
                       @click="onCellClicked(item, itemIndex, field, $event)"
@@ -103,8 +102,8 @@
                 </template>
               </template>
             </tr>
-            <template v-if="useDetailRow">
-              <transition :name="detailRowTransition" :key="itemIndex">
+            <template v-if="useDetailRow" :key="itemIndex">
+              <transition :name="detailRowTransition">
                 <tr
                   v-if="isVisibleDetailRow(item[trackBy])"
                   @click="onDetailRowClick(item, itemIndex, $event)"
@@ -131,14 +130,112 @@
               </td>
             </tr>
           </template>
-          <template v-if="lessThanMinRows">
-            <tr v-for="i in blankRows" class="blank-row" :key="i">
-              <template v-for="(field, fieldIndex) in tableFields">
-                <td v-if="field.visible" :key="fieldIndex">&nbsp;</td>
+          <template v-if="lessThanMinRows" :key="i">
+            <tr v-for="i in blankRows" class="blank-row">
+              <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
+                <td v-if="field.visible">&nbsp;</td>
               </template>
             </tr>
           </template>
         </tbody>
+<!--        <tbody v-cloak class="vuetable-body" v-if="isDraggable">-->
+        <draggable
+          v-model="tableData"
+          group="items"
+          item-key="id"
+          tag="tbody"
+          @end="updateOrder"
+          v-if="isDraggable"
+        >
+          <template #item="{element}" :key="element.id">
+            <tr
+              :item-index="element.id"
+              :class="onRowClass(element, element.id)"
+              @click="onRowClicked(element, element.id, $event)"
+              @dblclick="onRowDoubleClicked(element, element.id, $event)"
+              @mouseover="onMouseOver(element, element.id, $event)"
+            >
+              <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
+                <template v-if="field.visible">
+                  <template v-if="isFieldComponent(field.name)" :key="fieldIndex">
+                    <component
+                      :is="field.name.substr(25)"
+                      :row-data="element"
+                      :row-index="element.id"
+                      :row-field="field"
+                      :vuetable="vuetable"
+                      :class="bodyClass('vuetable-component', field)"
+                      :style="{ width: field.width }"
+                      @vuetable:field-event="onFieldEvent"
+                    ></component>
+                  </template>
+                  <template v-else-if="isFieldSlot(field.name)">
+                    <td
+                      :class="bodyClass('vuetable-slot', field)"
+                      :style="{ width: field.width }"
+                    >
+                      <slot
+                        :name="field.name"
+                        :row-data="element"
+                        :row-index="element.id"
+                        :row-field="field"
+                      ></slot>
+                    </td>
+                  </template>
+                  <template v-else>
+                    <td
+                      :class="bodyClass('vuetable-td-' + field.name, field)"
+                      :style="{ width: field.width }"
+                      v-html="renderNormalField(field, element)"
+                      @click="onCellClicked(element, element.id, field, $event)"
+                      @dblclick="
+                      onCellDoubleClicked(element, element.id, field, $event)
+                    "
+                      @contextmenu="
+                      onCellRightClicked(element, element.id, field, $event)
+                    "
+                    ></td>
+                  </template>
+                </template>
+              </template>
+            </tr>
+          </template>
+<!--          <template v-if="useDetailRow" :key="element.id">-->
+<!--            <transition :name="detailRowTransition">-->
+<!--              <tr-->
+<!--                v-if="isVisibleDetailRow(element[trackBy])"-->
+<!--                @click="onDetailRowClick(element, element.id, $event)"-->
+<!--                :class="onDetailRowClass(element, element.id)"-->
+<!--              >-->
+<!--                <td :colspan="countVisibleFields">-->
+<!--                  <component-->
+<!--                    :is="detailRowComponent"-->
+<!--                    :row-data="element"-->
+<!--                    :row-index="element.id"-->
+<!--                    :options="detailRowOptions"-->
+<!--                  ></component>-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            </transition>-->
+<!--          </template>-->
+        </draggable>
+        <template v-if="displayEmptyDataRow">
+          <tr>
+            <td :colspan="countVisibleFields" class="vuetable-empty-result">
+              <slot name="empty-result">
+                {{ noDataTemplate }}
+              </slot>
+            </td>
+          </tr>
+        </template>
+        <template v-if="lessThanMinRows" :key="i">
+          <tr v-for="i in blankRows" class="blank-row">
+            <template v-for="(field, fieldIndex) in tableFields">
+              <td v-if="field.visible" :key="fieldIndex">&nbsp;</td>
+            </template>
+          </tr>
+        </template>
+<!--        </tbody>-->
       </table>
     </div>
   </div>
@@ -153,16 +250,26 @@ import axios from "axios";
 import VuetableRowHeader from "./VuetableRowHeader.vue";
 import VuetableColGroup from "./VuetableColGroup.vue";
 import CssSemanticUI from "./VuetableCssSemanticUI.js";
+import draggable from "vuedraggable";
 
 export default {
   name: "Vuetable",
 
   components: {
     VuetableRowHeader,
-    VuetableColGroup
+    VuetableColGroup,
+    draggable
   },
 
   props: {
+    isDraggable: {
+      type: Boolean,
+      default: false
+    },
+    dragApi: {
+      type: String,
+      default: ""
+    },
     fields: {
       type: Array,
       required: true
@@ -367,7 +474,8 @@ export default {
       lastScrollPosition: 0,
       scrollBarWidth: "17px", //chrome default
       scrollVisible: false,
-      customCss: {}
+      customCss: {},
+      minimumOrder: 0,
     };
   },
 
@@ -496,6 +604,10 @@ export default {
   },
 
   methods: {
+    updateOrder() {
+      this.tableData.forEach((item, index) => (item.order = this.minimumOrder + index));
+      return axios.post(this.dragApi, { data: Object.assign({}, this.tableData) });
+    },
     getScrollBarWidth() {
       const outer = document.createElement("div");
       const inner = document.createElement("div");
@@ -738,6 +850,8 @@ export default {
         this.paginationPath,
         null
       );
+
+      this.minimumOrder = this.tableData[0].order;
 
       if (this.tablePagination === null) {
         this.warn(

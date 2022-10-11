@@ -15,7 +15,7 @@
     "release:minor": "standard-version --release-as minor",
     "release:patch": "standard-version --release-as patch",
     "start": "node build/dev-server.js",
-    "storybook:build": "vue-cli-service storybook:build -c config/storybook -o docs/storybook",
+    "storybook:build": "vue-cli-service storybook:build -c config/storybook -o docs/stredit_limitorybook",
     "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
     "test": "jest"
   },
@@ -23,7 +23,8 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@storybook/addon-actions": "6",

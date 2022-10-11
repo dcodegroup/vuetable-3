@@ -1,7 +1,7 @@
 <template>
   <tr>
     <template v-for="(field, fieldIndex) in vuetable.tableFields">
-      <template v-if="field.visible">
+      <template v-if="field.visible" :key="fieldIndex">
         <!-- <template v-if="vuetable.isFieldComponent(field.name)">
           <component
             :is="field.name"
@@ -33,7 +33,6 @@
         </template> -->
         <th
           @click="onColumnHeaderClicked(field, $event)"
-          :key="fieldIndex"
           :id="'_' + field.name"
           :class="headerClass('vuetable-th', field)"
           :style="{ width: field.width }"
@@ -47,16 +46,10 @@
 <script>
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable prefer-const */
-import VuetableFieldCheckbox from "./VuetableFieldCheckbox.vue";
-import VuetableFieldHandle from "./VuetableFieldHandle.vue";
-import VuetableFieldSequence from "./VuetableFieldSequence.vue";
 import VuetableColGutter from "./VuetableColGutter.vue";
 
 export default {
   components: {
-    "vuetable-field-checkbox": VuetableFieldCheckbox,
-    "vuetable-field-handle": VuetableFieldHandle,
-    "vuetable-field-sequence": VuetableFieldSequence,
     VuetableColGutter
   },
 
