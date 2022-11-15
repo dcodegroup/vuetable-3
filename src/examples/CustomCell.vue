@@ -1,5 +1,5 @@
 <script>
-import VuetableFieldMixin from "../components/VuetableFieldMixin";
+import VuetableFieldMixin from "../components/VuetableFieldMixin.vue";
 
 export default {
   name: "CustomCell",

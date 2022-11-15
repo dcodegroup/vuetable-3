@@ -250,7 +250,7 @@ import axios from "axios";
 import VuetableRowHeader from "./VuetableRowHeader.vue";
 import VuetableColGroup from "./VuetableColGroup.vue";
 import CssSemanticUI from "./VuetableCssSemanticUI.js";
-import draggable from "vuedraggable";
+import draggable from "vuedraggable-es";
 
 export default {
   name: "Vuetable",

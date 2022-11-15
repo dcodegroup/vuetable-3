@@ -25,9 +25,14 @@ If you any question, please post your questions in the "Issues" section. Be sure
 # Usage
 ## NPM
 
-Vue 3.x.x Compatibility
+Vue 3.x.x (Ported Version, Full ESM with Vite)
 ```shell
 npm install @dcodegroup-au/vuetable-3 --save
+```
+
+Vue 3.x.x Compatibility Mode
+```shell
+npm install @dcodegroup-au/vuetable-3@5.1.0 --save
 ```
 
 Vue 2.x.x Compatibility
