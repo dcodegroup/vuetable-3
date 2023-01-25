@@ -2,13 +2,15 @@
   <div :class="customCss.tableWrapper">
     <div class="vuetable-head-wrapper" v-if="isFixedHeader">
       <table
-        :class="['vuetable', customCss.tableClass, customCss.tableHeaderClass]">
+        :class="['vuetable', customCss.tableClass, customCss.tableHeaderClass]"
+      >
         <vuetable-col-group :is-header="true" />
         <thead>
           <slot name="tableHeader" :fields="tableFields">
-            <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
+            <template v-for="(header, headerIndex) in headerRows">
               <component
                 :is="header"
+                :key="headerIndex"
                 @vuetable:header-event="onHeaderEvent"
               ></component>
             </template>
@@ -33,8 +35,9 @@
         <vuetable-col-group />
         <thead v-if="!isFixedHeader">
           <slot name="tableHeader" :fields="tableFields">
-            <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
+            <template v-for="(header, headerIndex) in headerRows">
               <component
+                :key="headerIndex"
                 :is="header"
                 @vuetable:header-event="onHeaderEvent"
               ></component>
@@ -49,23 +52,23 @@
           ></slot>
         </tfoot>
         <tbody v-cloak class="vuetable-body" v-if="!isDraggable">
-          <template v-for="(item, itemIndex) in tableData" :key="itemIndex">
+          <template v-for="(item, itemIndex) in tableData">
             <tr
-              :item-index="itemIndex"
+              :key="itemIndex"
               :class="onRowClass(item, itemIndex)"
               @click="onRowClicked(item, itemIndex, $event)"
               @dblclick="onRowDoubleClicked(item, itemIndex, $event)"
               @mouseover="onMouseOver(item, itemIndex, $event)"
             >
-              <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
+              <template v-for="(field, fieldIndex) in tableFields">
                 <template v-if="field.visible">
                   <template v-if="isFieldComponent(field.name)">
                     <component
+                      :key="fieldIndex"
                       :is="field.name.substr(25)"
                       :row-data="item"
                       :row-index="itemIndex"
                       :row-field="field"
-                      :vuetable="vuetable"
                       :class="bodyClass('vuetable-component', field)"
                       :style="{ width: field.width }"
                       @vuetable:field-event="onFieldEvent"
@@ -91,19 +94,15 @@
                       :style="{ width: field.width }"
                       v-html="renderNormalField(field, item)"
                       @click="onCellClicked(item, itemIndex, field, $event)"
-                      @dblclick="
-                        onCellDoubleClicked(item, itemIndex, field, $event)
-                      "
-                      @contextmenu="
-                        onCellRightClicked(item, itemIndex, field, $event)
-                      "
+                      @dblclick="onCellDoubleClicked(item, itemIndex, field, $event)"
+                      @contextmenu="onCellRightClicked(item, itemIndex, field, $event)"
                     ></td>
                   </template>
                 </template>
               </template>
             </tr>
-            <template v-if="useDetailRow" :key="itemIndex">
-              <transition :name="detailRowTransition">
+            <template v-if="useDetailRow">
+              <transition :name="detailRowTransition" :key="itemIndex">
                 <tr
                   v-if="isVisibleDetailRow(item[trackBy])"
                   @click="onDetailRowClick(item, itemIndex, $event)"
@@ -130,15 +129,14 @@
               </td>
             </tr>
           </template>
-          <template v-if="lessThanMinRows" :key="i">
-            <tr v-for="i in blankRows" class="blank-row">
+          <template v-if="lessThanMinRows">
+            <tr v-for="i in blankRows" class="blank-row" :key="i">
               <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
                 <td v-if="field.visible">&nbsp;</td>
               </template>
             </tr>
           </template>
         </tbody>
-<!--        <tbody v-cloak class="vuetable-body" v-if="isDraggable">-->
         <draggable
           v-model="tableData"
           group="items"
@@ -163,7 +161,6 @@
                       :row-data="element"
                       :row-index="element.id"
                       :row-field="field"
-                      :vuetable="vuetable"
                       :class="bodyClass('vuetable-component', field)"
                       :style="{ width: field.width }"
                       @vuetable:field-event="onFieldEvent"
@@ -188,38 +185,16 @@
                       :style="{ width: field.width }"
                       v-html="renderNormalField(field, element)"
                       @click="onCellClicked(element, element.id, field, $event)"
-                      @dblclick="
-                      onCellDoubleClicked(element, element.id, field, $event)
-                    "
-                      @contextmenu="
-                      onCellRightClicked(element, element.id, field, $event)
-                    "
+                      @dblclick="onCellDoubleClicked(element, element.id, field, $event)"
+                      @contextmenu="onCellRightClicked(element, element.id, field, $event)"
                     ></td>
                   </template>
                 </template>
               </template>
             </tr>
           </template>
-<!--          <template v-if="useDetailRow" :key="element.id">-->
-<!--            <transition :name="detailRowTransition">-->
-<!--              <tr-->
-<!--                v-if="isVisibleDetailRow(element[trackBy])"-->
-<!--                @click="onDetailRowClick(element, element.id, $event)"-->
-<!--                :class="onDetailRowClass(element, element.id)"-->
-<!--              >-->
-<!--                <td :colspan="countVisibleFields">-->
-<!--                  <component-->
-<!--                    :is="detailRowComponent"-->
-<!--                    :row-data="element"-->
-<!--                    :row-index="element.id"-->
-<!--                    :options="detailRowOptions"-->
-<!--                  ></component>-->
-<!--                </td>-->
-<!--              </tr>-->
-<!--            </transition>-->
-<!--          </template>-->
         </draggable>
-        <template v-if="displayEmptyDataRow">
+        <template v-if="displayEmptyDataRow && isDraggable">
           <tr>
             <td :colspan="countVisibleFields" class="vuetable-empty-result">
               <slot name="empty-result">
@@ -228,14 +203,13 @@
             </td>
           </tr>
         </template>
-        <template v-if="lessThanMinRows" :key="i">
-          <tr v-for="i in blankRows" class="blank-row">
+        <template v-if="lessThanMinRows">
+          <tr v-for="i in blankRows" class="blank-row" :key="i">
             <template v-for="(field, fieldIndex) in tableFields">
               <td v-if="field.visible" :key="fieldIndex">&nbsp;</td>
             </template>
           </tr>
         </template>
-<!--        </tbody>-->
       </table>
     </div>
   </div>
@@ -605,8 +579,12 @@ export default {
 
   methods: {
     updateOrder() {
-      this.tableData.forEach((item, index) => (item.order = this.minimumOrder + index));
-      return axios.post(this.dragApi, { data: Object.assign({}, this.tableData) });
+      this.tableData.forEach(
+        (item, index) => (item.order = this.minimumOrder + index)
+      );
+      return axios.post(this.dragApi, {
+        data: Object.assign({}, this.tableData)
+      });
     },
     getScrollBarWidth() {
       const outer = document.createElement("div");
@@ -633,7 +611,7 @@ export default {
       const horizontal = e.currentTarget.scrollLeft;
 
       //don't modify header scroll if we are scrolling vertically
-      if (horizontal != this.lastScrollPosition) {
+      if (horizontal !== this.lastScrollPosition) {
         const header = this.$el.getElementsByClassName(
           "vuetable-head-wrapper"
         )[0];
@@ -810,12 +788,11 @@ export default {
       this.fireEvent("loading");
 
       const queryParams = this.getAllQueryParams();
-      const allParams = {
+
+      this.httpOptions["params"] = {
         ...this.getAppendParams(queryParams),
         ...initialParams
       };
-
-      this.httpOptions["params"] = allParams;
 
       return this.fetch(this.apiUrl, this.httpOptions)
         .then(successCb)
