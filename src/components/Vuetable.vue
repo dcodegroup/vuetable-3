@@ -7,10 +7,9 @@
         <vuetable-col-group :is-header="true" />
         <thead>
           <slot name="tableHeader" :fields="tableFields">
-            <template v-for="(header, headerIndex) in headerRows">
+            <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
               <component
                 :is="header"
-                :key="headerIndex"
                 @vuetable:header-event="onHeaderEvent"
               ></component>
             </template>
@@ -35,9 +34,8 @@
         <vuetable-col-group />
         <thead v-if="!isFixedHeader">
           <slot name="tableHeader" :fields="tableFields">
-            <template v-for="(header, headerIndex) in headerRows">
+            <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
               <component
-                :key="headerIndex"
                 :is="header"
                 @vuetable:header-event="onHeaderEvent"
               ></component>
@@ -52,19 +50,17 @@
           ></slot>
         </tfoot>
         <tbody v-cloak class="vuetable-body" v-if="!isDraggable">
-          <template v-for="(item, itemIndex) in tableData">
+          <template v-for="(item, itemIndex) in tableData" :key="itemIndex">
             <tr
-              :key="itemIndex"
               :class="onRowClass(item, itemIndex)"
               @click="onRowClicked(item, itemIndex, $event)"
               @dblclick="onRowDoubleClicked(item, itemIndex, $event)"
               @mouseover="onMouseOver(item, itemIndex, $event)"
             >
-              <template v-for="(field, fieldIndex) in tableFields">
+              <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
                 <template v-if="field.visible">
                   <template v-if="isFieldComponent(field.name)">
                     <component
-                      :key="fieldIndex"
                       :is="field.name.substr(25)"
                       :row-data="item"
                       :row-index="itemIndex"
@@ -76,7 +72,6 @@
                   </template>
                   <template v-else-if="isFieldSlot(field.name)">
                     <td
-                      :key="fieldIndex"
                       :class="bodyClass('vuetable-slot', field)"
                       :style="{ width: field.width }"
                     >
@@ -102,7 +97,7 @@
               </template>
             </tr>
             <template v-if="useDetailRow">
-              <transition :name="detailRowTransition" :key="itemIndex">
+              <transition :name="detailRowTransition">
                 <tr
                   v-if="isVisibleDetailRow(item[trackBy])"
                   @click="onDetailRowClick(item, itemIndex, $event)"
