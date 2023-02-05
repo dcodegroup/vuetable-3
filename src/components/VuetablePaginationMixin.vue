@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable @typescript-eslint/camelcase */
-import CssSemanticUI from "./VuetableCssSemanticUI.js";
+import VuetableCss from "./VuetableCssTailwindUI.js";
 
 export default {
   props: {
@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     mergeCss() {
-      this.customCss = { ...CssSemanticUI.pagination, ...this.css };
+      this.customCss = { ...VuetableCss.pagination, ...this.css };
     },
     loadPage(page) {
       this.$emit(this.eventPrefix + "change-page", page);

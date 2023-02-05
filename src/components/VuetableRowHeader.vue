@@ -1,52 +1,23 @@
 <template>
   <tr>
     <template v-for="(field, fieldIndex) in vuetable.tableFields">
-      <template v-if="field.visible" :key="fieldIndex">
-        <!-- <template v-if="vuetable.isFieldComponent(field.name)">
-          <component
-            :is="field.name"
-            :row-field="field"
-            :is-header="true"
-            :title="renderTitle(field)"
-            :vuetable="vuetable"
-            :key="fieldIndex"
-            :class="headerClass('vuetable-th-component', field)"
-            :style="{ width: field.width }"
-            @vuetable:header-event="vuetable.onHeaderEvent"
-            @click="onColumnHeaderClicked(field, $event)"
-          >
-            <component
-              :is="getSortComponent(field).component"
-              v-bind="getSortComponent(field).props"
-              v-if="getSortComponent(field)"
-            />
-          </component>
-        </template>
-        <template v-else-if="vuetable.isFieldSlot(field.name)">
-          <th
-            :class="headerClass('vuetable-th-slot', field)"
-            :key="fieldIndex"
-            :style="{ width: field.width }"
-            v-html="renderTitle(field)"
-            @click="onColumnHeaderClicked(field, $event)"
-          ></th>
-        </template> -->
-        <th
-          @click="onColumnHeaderClicked(field, $event)"
-          :id="'_' + field.name"
-          :class="headerClass('vuetable-th', field)"
-          :style="{ width: field.width }"
-          v-html="renderTitle(field)"
-        ></th>
-      </template>
+      <th
+        v-if="field.visible" :key="fieldIndex"
+        @click="onColumnHeaderClicked(field, $event)"
+        :id="'_' + field.name"
+        :class="headerClass('vuetable-th', field)"
+        :style="{ width: field.width }"
+        v-html="renderTitle(field)"
+      ></th>
     </template>
-    <vuetable-col-gutter v-if="vuetable.scrollVisible" />
+    <vuetable-col-gutter v-if="vuetable.scrollVisible"/>
   </tr>
 </template>
 <script>
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable prefer-const */
 import VuetableColGutter from "./VuetableColGutter.vue";
+import VuetableCss from "./VuetableCssTailwindUI.js";
 
 export default {
   components: {
@@ -76,7 +47,8 @@ export default {
         base + "-" + this.toSnakeCase(field.name),
         field.titleClass || "",
         this.sortClass(field),
-        { sortable: this.vuetable.isSortable(field) }
+        {sortable: this.vuetable.isSortable(field)},
+        VuetableCss.table.th
       ];
     },
 
@@ -110,7 +82,7 @@ export default {
 
       if (i !== false) {
         cls =
-          this.sortOrder[i].direction == "asc"
+          this.sortOrder[i].direction === "asc"
             ? this.css.ascendingIcon
             : this.css.descendingIcon;
       }
@@ -130,7 +102,7 @@ export default {
         return {
           component: sortCompFunc,
           props: {
-            order: this.sortOrder[i].direction == "asc" ? "asc" : "desc"
+            order: this.sortOrder[i].direction === "asc" ? "asc" : "desc"
           }
         };
       }
@@ -180,10 +152,10 @@ export default {
         )};position:relative;float:right`;
         const iconTag = this.vuetable.showSortIcons
           ? this.renderIconTag(
-              ["sort-icon", this.sortIcon(field)],
-              `style="${style}"`,
-              field
-            )
+            ["sort-icon", this.sortIcon(field)],
+            `style="${style}"`,
+            field
+          )
           : "";
         return title + " " + iconTag;
       }
@@ -220,9 +192,7 @@ export default {
         step = (max - min) / (count - 1);
       }
 
-      const opacity = max - current * step;
-
-      return opacity;
+      return max - current * step;
     },
 
     renderIconTag(classes, options = "", field) {

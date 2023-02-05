@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable @typescript-eslint/camelcase */
-import CssSemanticUI from "./VuetableCssSemanticUI.js";
+import VuetableUI from "./VuetableCssTailwindUI.js";
 
 export default {
   props: {
@@ -23,7 +23,7 @@ export default {
       }
     }
   },
-  data: function() {
+  data: function () {
     return {
       tablePagination: null,
       customCss: {}
@@ -36,9 +36,9 @@ export default {
       }
 
       return this.infoTemplate
-        .replace("{from}", this.tablePagination.from || 0)
-        .replace("{to}", this.tablePagination.to || 0)
-        .replace("{total}", this.tablePagination.total || 0);
+                 .replace("{from}", this.tablePagination.from || 0)
+                 .replace("{to}", this.tablePagination.to || 0)
+                 .replace("{total}", this.tablePagination.total || 0);
     }
   },
   created() {
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     mergeCss() {
-      this.customCss = { ...CssSemanticUI.paginationInfo, ...this.css };
+      this.customCss = {...VuetableUI.paginationInfo, ...this.css};
     },
     setPaginationData(tablePagination) {
       this.tablePagination = tablePagination;
