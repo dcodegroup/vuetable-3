@@ -6,7 +6,10 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 // @ts-ignore
-import Vue from "vue";
+// import Vue from "vue";
+
+// # Import: CreateApp via Vue ESM Bundler
+import {createApp} from 'vue';
 import Vuetable from "./components/Vuetable.vue";
 import VuetablePagination from "./components/VuetablePagination.vue";
 import VuetablePaginationDropdown from "./components/VuetablePaginationDropdown.vue";
@@ -14,17 +17,19 @@ import VuetablePaginationInfo from "./components/VuetablePaginationInfo.vue";
 import axios from "axios";
 
 import VuetableFieldCheckbox from "./components/VuetableFieldCheckbox.vue";
-import VuetableFieldHandle from "./components/VuetableFieldHandle";
+import VuetableFieldHandle from "./components/VuetableFieldHandle.vue";
 import VuetableFieldSequence from "./components/VuetableFieldSequence.vue";
 import CustomCell from "./examples/CustomCell.vue";
 
-Vue.component("vuetable-field-checkbox", VuetableFieldCheckbox);
-Vue.component("vuetable-field-handle", VuetableFieldHandle);
-Vue.component("vuetable-field-sequence", VuetableFieldSequence);
+const app = createApp({});
+
+app.component("vuetable-field-checkbox", VuetableFieldCheckbox);
+app.component("vuetable-field-handle", VuetableFieldHandle);
+app.component("vuetable-field-sequence", VuetableFieldSequence);
 
 const E_SERVER_ERROR = "Error communicating with the server";
 
-Vue.component("custom-actions", {
+app.component("custom-actions", {
   template: [
     "<div>",
     '<button class="ui red button" @click="onClick(\'view-item\', rowData)"><i class="zoom icon"></i></button>',
@@ -46,7 +51,7 @@ Vue.component("custom-actions", {
   }
 });
 
-Vue.component("my-detail-row", {
+app.component("my-detail-row", {
   template: [
     '<div @click="onClick">',
     '<div class="inline field">',
@@ -84,7 +89,7 @@ Vue.component("my-detail-row", {
   }
 });
 
-Vue.component("settings-modal", {
+app.component("settings-modal", {
   template: `
     <div class="ui small modal" id="settingsModal">
       <div class="header">Settings</div>
@@ -181,7 +186,7 @@ Vue.component("settings-modal", {
   }
 });
 
-const lang = {
+const langDefault = {
   nickname: "Nickname",
   birthdate: "Birthdate"
 };
@@ -243,8 +248,8 @@ const dataFields = [
     name: "nickname",
     title: (nameOnly = false) => {
       return nameOnly
-        ? lang["nickname"]
-        : `<i class="paw icon"></i> ${lang["nickname"]}`;
+        ? langDefault["nickname"]
+        : `<i class="paw icon"></i> ${langDefault["nickname"]}`;
     },
     sortField: "nickname",
     width: "120px",
@@ -257,8 +262,8 @@ const dataFields = [
     name: "birthdate",
     title: (nameOnly = false) => {
       return nameOnly
-        ? lang["birthdate"]
-        : `<i class="orange birthday icon"></i> ${lang["birthdate"]}`;
+        ? langDefault["birthdate"]
+        : `<i class="orange birthday icon"></i> ${langDefault["birthdate"]}`;
     },
     width: "100px",
     sortField: "birthdate",
@@ -375,8 +380,7 @@ const mainTemplate = `
 `;
 
 /* eslint-disable no-new */
-const vm = new Vue({
-  el: "#app",
+const vm = createApp({
   components: {
     Vuetable,
     VuetablePagination,
@@ -384,26 +388,41 @@ const vm = new Vue({
     VuetablePaginationInfo
   },
   template: mainTemplate,
-  data: {
-    loading: "",
-    searchFor: "",
-    moreParams: {},
-    fields: dataFields,
-    tableHeight: "600px",
-    vuetableFields: false,
-    fieldPrefix: "vuetable-",
-    sortOrder: [
+  setup() {
+    const loading = "";
+    const searchFor = "";
+    const moreParams = {};
+    const fields = dataFields;
+    const tableHeight = "600px";
+    const vuetableFields = false;
+    const fieldPrefix = "vuetable";
+    const sortOrder = [
       {
         field: "name",
         direction: "asc"
       }
-    ],
-    multiSort: true,
-    paginationComponent: "vuetable-pagination",
-    perPage: 10,
-    paginationInfoTemplate:
-      "Showing record: {from} to {to} from {total} item(s)",
-    lang: lang
+    ];
+    const multiSort = true;
+    const paginationComponent = "vuetable-pagination";
+    const perPage = 10;
+    const paginationInfoTemplate =
+      "Showing record: {from} to {to} from {total} item(s)";
+    const lang = langDefault;
+    return {
+      loading,
+      searchFor,
+      moreParams,
+      fields,
+      tableHeight,
+      vuetableFields,
+      fieldPrefix,
+      sortOrder,
+      multiSort,
+      paginationComponent,
+      perPage,
+      paginationInfoTemplate,
+      lang,
+    }
   },
   watch: {
     perPage(val, oldVal) {
@@ -622,3 +641,4 @@ const vm = new Vue({
     }
   }
 });
+vm.mount("#app");
