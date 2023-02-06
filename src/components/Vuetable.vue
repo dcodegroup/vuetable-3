@@ -843,7 +843,7 @@ export default {
         null
       );
 
-      this.minimumOrder = this.tableData[0].order;
+      this.minimumOrder = this.tableData.length ? this.tableData[0].order : this.minimumOrder;
 
       if (this.tablePagination === null) {
         this.warn(
