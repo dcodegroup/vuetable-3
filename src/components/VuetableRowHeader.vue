@@ -2,15 +2,16 @@
   <tr>
     <template v-for="(field, fieldIndex) in vuetable.tableFields">
       <th
-        v-if="field.visible" :key="fieldIndex"
+        v-if="field.visible"
         @click="onColumnHeaderClicked(field, $event)"
+        :key="fieldIndex"
         :id="'_' + field.name"
         :class="headerClass('vuetable-th', field)"
         :style="{ width: field.width }"
         v-html="renderTitle(field)"
       ></th>
     </template>
-    <vuetable-col-gutter v-if="vuetable.scrollVisible"/>
+    <vuetable-col-gutter v-if="vuetable.scrollVisible" />
   </tr>
 </template>
 <script>
@@ -26,7 +27,7 @@ export default {
 
   computed: {
     sortOrder() {
-      return this.$parent.sortOrder;
+      return this.$parent.sortOrderData;
     },
 
     css() {
@@ -38,16 +39,12 @@ export default {
     }
   },
   methods: {
-    stripPrefix(name) {
-      return name.replace(this.vuetable.fieldPrefix, "");
-    },
-
     headerClass(base, field) {
       return [
         base + "-" + this.toSnakeCase(field.name),
         field.titleClass || "",
         this.sortClass(field),
-        {sortable: this.vuetable.isSortable(field)},
+        { sortable: this.vuetable.isSortable(field) },
         VuetableCss.table.th
       ];
     },
@@ -68,7 +65,7 @@ export default {
 
       if (i !== false) {
         cls =
-          this.sortOrder[i].direction == "asc"
+          this.sortOrder[i].direction === "asc"
             ? this.css.ascendingClass
             : this.css.descendingClass;
       }
@@ -88,31 +85,6 @@ export default {
       }
 
       return cls;
-    },
-
-    // Allow ability to render a vue component for the sort icon.
-    getSortComponent(field) {
-      const i = this.currentSortOrderPosition(field);
-      const sortCompFunc = this.css.renderSortComp;
-      if (!sortCompFunc) {
-        return;
-      }
-
-      if (i !== false) {
-        return {
-          component: sortCompFunc,
-          props: {
-            order: this.sortOrder[i].direction === "asc" ? "asc" : "desc"
-          }
-        };
-      }
-
-      return {
-        component: sortCompFunc,
-        props: {
-          order: "sortable"
-        }
-      };
     },
 
     isInCurrentSortGroup(field) {
@@ -143,6 +115,7 @@ export default {
 
     renderTitle(field) {
       const title = this.getTitle(field);
+
       if (
         (title.length > 0 && this.isInCurrentSortGroup(field)) ||
         this.hasSortableIcon(field)
@@ -157,10 +130,10 @@ export default {
             field
           )
           : "";
-        return title + " " + iconTag;
+        return '<span class="flex">' + title + "&nbsp;" + iconTag + '</span>';
       }
 
-      return title;
+      return'<span>' + title + '</span>';
     },
 
     getTitle(field) {

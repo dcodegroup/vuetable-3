@@ -461,6 +461,7 @@ export default {
       customCss: {},
       minimumOrder: 0,
       loading: false,
+      sortOrderData: this.sortOrder,
     };
   },
 
@@ -561,8 +562,8 @@ export default {
 
   watch: {
     multiSort(newVal) {
-      if (newVal === false && this.sortOrder.length > 1) {
-        this.sortOrder.splice(1);
+      if (newVal === false && this.sortOrderData.length > 1) {
+        this.sortOrderData.splice(1);
         this.loadData();
       }
     },
@@ -918,7 +919,7 @@ export default {
 
       if (typeof this.queryParams === "function") {
         params = this.queryParams(
-          this.sortOrder,
+          this.sortOrderData,
           this.currentPage,
           this.perPage
         );
@@ -934,23 +935,23 @@ export default {
     },
 
     getSortParam() {
-      if (!this.sortOrder || this.sortOrder.field == "") {
+      if (!this.sortOrderData || this.sortOrderData.field == "") {
         return "";
       }
 
       if (typeof this.sortParams === "function") {
-        return this.sortParams(this.sortOrder);
+        return this.sortParams(this.sortOrderData);
       }
 
       return this.getDefaultSortParam();
     },
 
     getDefaultSortParam() {
-      return this.sortOrder.map(item => `${item.sortField}`).join(",");
+      return this.sortOrderData.map(item => `${item.sortField}`).join(",");
     },
 
     getOrderParam() {
-      return this.sortOrder[0] ? this.sortOrder[0].direction : null;
+      return this.sortOrderData[0] ? this.sortOrderData[0].direction : null;
     },
 
     getAppendParams(params) {
@@ -970,7 +971,7 @@ export default {
         return false;
       }
 
-      for (let i = 0; i < this.sortOrder.length; i++) {
+      for (let i = 0; i < this.sortOrderData.length; i++) {
         if (this.fieldIsInSortOrderPosition(field, i)) {
           return i;
         }
@@ -981,8 +982,8 @@ export default {
 
     fieldIsInSortOrderPosition(field, i) {
       return (
-        // this.sortOrder[i].field === field.name &&
-        this.sortOrder[i].sortField === field.sortField
+        // this.sortOrderData[i].field === field.name &&
+        this.sortOrderData[i].sortField === field.sortField
       );
     },
 
@@ -1006,7 +1007,7 @@ export default {
     },
 
     addSortColumn(field) {
-      this.sortOrder.push({
+      this.sortOrderData.push({
         field: field.name,
         sortField: field.sortField,
         direction: "asc"
@@ -1014,11 +1015,11 @@ export default {
     },
 
     removeSortColumn(index) {
-      this.sortOrder.splice(index, 1);
+      this.sortOrderData.splice(index, 1);
     },
 
     setSortColumnDirection(index, direction) {
-      this.sortOrder[index].direction = direction;
+      this.sortOrderData[index].direction = direction;
     },
 
     multiColumnSort(field) {
@@ -1029,7 +1030,7 @@ export default {
         this.addSortColumn(field, "asc");
       } else {
         //this field is in the sort array, now we change its state
-        if (this.sortOrder[i].direction === "asc") {
+        if (this.sortOrderData[i].direction === "asc") {
           // switch direction
           this.setSortColumnDirection(i, "desc");
         } else {
@@ -1039,28 +1040,28 @@ export default {
     },
 
     singleColumnSort(field) {
-      if (this.sortOrder.length === 0) {
+      if (this.sortOrderData.length === 0) {
         // this.clearSortOrder()
         this.addSortColumn(field, "asc");
         return;
       }
 
-      this.sortOrder.splice(1); //removes additional columns
+      this.sortOrderData.splice(1); //removes additional columns
 
       if (this.fieldIsInSortOrderPosition(field, 0)) {
         // change sort direction
-        this.sortOrder[0].direction =
-          this.sortOrder[0].direction === "asc" ? "desc" : "asc";
+        this.sortOrderData[0].direction =
+          this.sortOrderData[0].direction === "asc" ? "desc" : "asc";
       } else {
         // reset sort direction
-        this.sortOrder[0].direction = "asc";
+        this.sortOrderData[0].direction = "asc";
       }
-      this.sortOrder[0].field = field.name;
-      this.sortOrder[0].sortField = field.sortField;
+      this.sortOrderData[0].field = field.name;
+      this.sortOrderData[0].sortField = field.sortField;
     },
 
     clearSortOrder() {
-      this.sortOrder = [];
+      this.sortOrderData = [];
     },
 
     hasFormatter(item) {
@@ -1204,7 +1205,7 @@ export default {
     },
 
     normalizeSortOrder() {
-      this.sortOrder.forEach(item => {
+      this.sortOrderData.forEach(item => {
         item.sortField = item.sortField || item.field;
       });
     },
@@ -1225,7 +1226,7 @@ export default {
     },
 
     callDataManager() {
-      const result = this.dataManager(this.sortOrder, this.makePagination());
+      const result = this.dataManager(this.sortOrderData, this.makePagination());
 
       if (this.isPromiseObject(result)) {
         result.then(data => this.setData(data));
