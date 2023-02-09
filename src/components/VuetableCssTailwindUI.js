@@ -1,6 +1,6 @@
 export default {
   table: {
-    tableWrapper: "overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg",
+    tableWrapper: "shadow ring-1 ring-black ring-opacity-5 md:rounded-lg",
     thead: "bg-gray-50",
     tbody: "divide-y divide-gray-200 bg-white",
     table: "min-w-full divide-y divide-gray-300",
