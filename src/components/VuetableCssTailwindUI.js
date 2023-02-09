@@ -16,7 +16,6 @@ export default {
     sortableIcon: "grey sort icon",
     handleIcon: "grey sidebar icon",
     renderIcon: (classes, options, field) => {
-      console.log(classes, options, field)
       if (classes.length > 1 && classes[1].includes('svg')) {
         return classes[1]
       }
