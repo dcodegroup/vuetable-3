@@ -2,17 +2,18 @@
   <div :class="customCss.tableWrapper">
     <div class="vuetable-head-wrapper" v-if="isFixedHeader">
       <table
-        :class="['vuetable', customCss.tableClass, customCss.tableHeaderClass]">
+        :class="['vuetable', customCss.table]"
+      >
         <vuetable-col-group :is-header="true" />
-        <thead>
-          <slot name="tableHeader" :fields="tableFields">
-            <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
-              <component
-                :is="header"
-                @vuetable:header-event="onHeaderEvent"
-              ></component>
-            </template>
-          </slot>
+        <thead :class="[customCss.thead]">
+        <slot name="tableHeader" :fields="tableFields">
+          <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
+            <component
+              :is="header"
+              @vuetable:header-event="onHeaderEvent"
+            ></component>
+          </template>
+        </slot>
         </thead>
       </table>
     </div>
@@ -26,119 +27,125 @@
         :class="[
           'vuetable',
           isFixedHeader ? 'fixed-header' : '',
-          customCss.tableClass,
-          customCss.tableBodyClass
+          customCss.table,
         ]"
       >
         <vuetable-col-group />
-        <thead v-if="!isFixedHeader">
-          <slot name="tableHeader" :fields="tableFields">
-            <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
-              <component
-                :is="header"
-                @vuetable:header-event="onHeaderEvent"
-              ></component>
-            </template>
-          </slot>
+        <thead v-if="!isFixedHeader" :class="[customCss.thead]">
+        <slot name="tableHeader" :fields="tableFields">
+          <template v-for="(header, headerIndex) in headerRows" :key="headerIndex">
+            <component
+              :is="header"
+              @vuetable:header-event="onHeaderEvent"
+            ></component>
+          </template>
+        </slot>
         </thead>
         <tfoot>
-          <slot
-            name="tableFooter"
-            :fields="tableFields"
-            :data="tableData"
-          ></slot>
+        <slot
+          name="tableFooter"
+          :fields="tableFields"
+          :data="tableData"
+        ></slot>
         </tfoot>
-        <tbody v-cloak class="vuetable-body" v-if="!isDraggable">
-          <template v-for="(item, itemIndex) in tableData" :key="itemIndex">
-            <tr
-              :item-index="itemIndex"
-              :class="onRowClass(item, itemIndex)"
-              @click="onRowClicked(item, itemIndex, $event)"
-              @dblclick="onRowDoubleClicked(item, itemIndex, $event)"
-              @mouseover="onMouseOver(item, itemIndex, $event)"
-            >
-              <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
-                <template v-if="field.visible">
-                  <template v-if="isFieldComponent(field.name)">
-                    <component
-                      :is="field.name.substr(25)"
+        <tbody v-cloak class="vuetable-body" v-if="!isDraggable" :class="[customCss.tbody]">
+        <template v-if="loading">
+          <div aria-label="Loading..." role="status" class="flex items-center ml-2 space-x-2 h-12">
+            <svg class="h-6 w-6 animate-spin stroke-gray-500" viewBox="0 0 256 256">
+              <line x1="128" y1="32" x2="128" y2="64" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
+              <line x1="195.9" y1="60.1" x2="173.3" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
+              <line x1="224" y1="128" x2="192" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
+              <line x1="195.9" y1="195.9" x2="173.3" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
+              <line x1="128" y1="224" x2="128" y2="192" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
+              <line x1="60.1" y1="195.9" x2="82.7" y2="173.3" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
+              <line x1="32" y1="128" x2="64" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
+              <line x1="60.1" y1="60.1" x2="82.7" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
+            </svg>
+            <span class="text-xs font-medium text-gray-500">Loading...</span>
+          </div>
+        </template>
+        <template v-for="(item, itemIndex) in tableData" :key="itemIndex" v-else>
+          <tr
+            :class="onRowClass(item, itemIndex)"
+            @click="onRowClicked(item, itemIndex, $event)"
+            @dblclick="onRowDoubleClicked(item, itemIndex, $event)"
+            @mouseover="onMouseOver(item, itemIndex, $event)"
+          >
+            <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
+              <template v-if="field.visible">
+                <template v-if="isFieldComponent(field.name)">
+                  <component
+                    :is="field.name.substr(25)"
+                    :row-data="item"
+                    :row-index="itemIndex"
+                    :row-field="field"
+                    :class="bodyClass('vuetable-component', field)"
+                    :style="{ width: field.width }"
+                    @vuetable:field-event="onFieldEvent"
+                  ></component>
+                </template>
+                <template v-else-if="isFieldSlot(field.name)">
+                  <td
+                    :class="bodyClass('vuetable-slot', field)"
+                    :style="{ width: field.width }"
+                  >
+                    <slot
+                      :name="field.name"
                       :row-data="item"
                       :row-index="itemIndex"
                       :row-field="field"
-                      :vuetable="vuetable"
-                      :class="bodyClass('vuetable-component', field)"
-                      :style="{ width: field.width }"
-                      @vuetable:field-event="onFieldEvent"
-                    ></component>
-                  </template>
-                  <template v-else-if="isFieldSlot(field.name)">
-                    <td
-                      :key="fieldIndex"
-                      :class="bodyClass('vuetable-slot', field)"
-                      :style="{ width: field.width }"
-                    >
-                      <slot
-                        :name="field.name"
-                        :row-data="item"
-                        :row-index="itemIndex"
-                        :row-field="field"
-                      ></slot>
-                    </td>
-                  </template>
-                  <template v-else>
-                    <td
-                      :class="bodyClass('vuetable-td-' + field.name, field)"
-                      :style="{ width: field.width }"
-                      v-html="renderNormalField(field, item)"
-                      @click="onCellClicked(item, itemIndex, field, $event)"
-                      @dblclick="
-                        onCellDoubleClicked(item, itemIndex, field, $event)
-                      "
-                      @contextmenu="
-                        onCellRightClicked(item, itemIndex, field, $event)
-                      "
-                    ></td>
-                  </template>
+                    ></slot>
+                  </td>
+                </template>
+                <template v-else>
+                  <td
+                    :class="bodyClass('vuetable-td-' + field.name, field)"
+                    :style="{ width: field.width }"
+                    v-html="renderNormalField(field, item)"
+                    @click="onCellClicked(item, itemIndex, field, $event)"
+                    @dblclick="onCellDoubleClicked(item, itemIndex, field, $event)"
+                    @contextmenu="onCellRightClicked(item, itemIndex, field, $event)"
+                  ></td>
                 </template>
               </template>
-            </tr>
-            <template v-if="useDetailRow" :key="itemIndex">
-              <transition :name="detailRowTransition">
-                <tr
-                  v-if="isVisibleDetailRow(item[trackBy])"
-                  @click="onDetailRowClick(item, itemIndex, $event)"
-                  :class="onDetailRowClass(item, itemIndex)"
-                >
-                  <td :colspan="countVisibleFields">
-                    <component
-                      :is="detailRowComponent"
-                      :row-data="item"
-                      :row-index="itemIndex"
-                      :options="detailRowOptions"
-                    ></component>
-                  </td>
-                </tr>
-              </transition>
             </template>
+          </tr>
+          <template v-if="useDetailRow">
+            <transition :name="detailRowTransition">
+              <tr
+                v-if="isVisibleDetailRow(item[trackBy])"
+                @click="onDetailRowClick(item, itemIndex, $event)"
+                :class="onDetailRowClass(item, itemIndex)"
+              >
+                <td :colspan="countVisibleFields">
+                  <component
+                    :is="detailRowComponent"
+                    :row-data="item"
+                    :row-index="itemIndex"
+                    :options="detailRowOptions"
+                  ></component>
+                </td>
+              </tr>
+            </transition>
           </template>
-          <template v-if="displayEmptyDataRow">
-            <tr>
-              <td :colspan="countVisibleFields" class="vuetable-empty-result">
-                <slot name="empty-result">
-                  {{ noDataTemplate }}
-                </slot>
-              </td>
-            </tr>
-          </template>
-          <template v-if="lessThanMinRows" :key="i">
-            <tr v-for="i in blankRows" class="blank-row">
-              <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
-                <td v-if="field.visible">&nbsp;</td>
-              </template>
-            </tr>
-          </template>
+        </template>
+        <template v-if="displayEmptyDataRow">
+          <tr>
+            <td :colspan="countVisibleFields" class="vuetable-empty-result">
+              <slot name="empty-result">
+                {{ noDataTemplate }}
+              </slot>
+            </td>
+          </tr>
+        </template>
+        <template v-if="lessThanMinRows">
+          <tr v-for="i in blankRows" class="blank-row" :key="i">
+            <template v-for="(field, fieldIndex) in tableFields" :key="fieldIndex">
+              <td v-if="field.visible">&nbsp;</td>
+            </template>
+          </tr>
+        </template>
         </tbody>
-<!--        <tbody v-cloak class="vuetable-body" v-if="isDraggable">-->
         <draggable
           v-model="tableData"
           group="items"
@@ -163,7 +170,6 @@
                       :row-data="element"
                       :row-index="element.id"
                       :row-field="field"
-                      :vuetable="vuetable"
                       :class="bodyClass('vuetable-component', field)"
                       :style="{ width: field.width }"
                       @vuetable:field-event="onFieldEvent"
@@ -188,38 +194,16 @@
                       :style="{ width: field.width }"
                       v-html="renderNormalField(field, element)"
                       @click="onCellClicked(element, element.id, field, $event)"
-                      @dblclick="
-                      onCellDoubleClicked(element, element.id, field, $event)
-                    "
-                      @contextmenu="
-                      onCellRightClicked(element, element.id, field, $event)
-                    "
+                      @dblclick="onCellDoubleClicked(element, element.id, field, $event)"
+                      @contextmenu="onCellRightClicked(element, element.id, field, $event)"
                     ></td>
                   </template>
                 </template>
               </template>
             </tr>
           </template>
-<!--          <template v-if="useDetailRow" :key="element.id">-->
-<!--            <transition :name="detailRowTransition">-->
-<!--              <tr-->
-<!--                v-if="isVisibleDetailRow(element[trackBy])"-->
-<!--                @click="onDetailRowClick(element, element.id, $event)"-->
-<!--                :class="onDetailRowClass(element, element.id)"-->
-<!--              >-->
-<!--                <td :colspan="countVisibleFields">-->
-<!--                  <component-->
-<!--                    :is="detailRowComponent"-->
-<!--                    :row-data="element"-->
-<!--                    :row-index="element.id"-->
-<!--                    :options="detailRowOptions"-->
-<!--                  ></component>-->
-<!--                </td>-->
-<!--              </tr>-->
-<!--            </transition>-->
-<!--          </template>-->
         </draggable>
-        <template v-if="displayEmptyDataRow">
+        <template v-if="displayEmptyDataRow && isDraggable">
           <tr>
             <td :colspan="countVisibleFields" class="vuetable-empty-result">
               <slot name="empty-result">
@@ -228,14 +212,13 @@
             </td>
           </tr>
         </template>
-        <template v-if="lessThanMinRows" :key="i">
-          <tr v-for="i in blankRows" class="blank-row">
+        <template v-if="lessThanMinRows">
+          <tr v-for="i in blankRows" class="blank-row" :key="i">
             <template v-for="(field, fieldIndex) in tableFields">
               <td v-if="field.visible" :key="fieldIndex">&nbsp;</td>
             </template>
           </tr>
         </template>
-<!--        </tbody>-->
       </table>
     </div>
   </div>
@@ -249,8 +232,9 @@
 import axios from "axios";
 import VuetableRowHeader from "./VuetableRowHeader.vue";
 import VuetableColGroup from "./VuetableColGroup.vue";
-import CssSemanticUI from "./VuetableCssSemanticUI.js";
-import draggable from "vuedraggable";
+// import CssSemanticUI from "./VuetableCssSemanticUI.js";
+import VuetableCss from "./VuetableCssTailwindUI.js";
+import draggable from "vuedraggable-es";
 
 export default {
   name: "Vuetable",
@@ -476,6 +460,8 @@ export default {
       scrollVisible: false,
       customCss: {},
       minimumOrder: 0,
+      loading: false,
+      sortOrderData: this.sortOrder,
     };
   },
 
@@ -576,8 +562,8 @@ export default {
 
   watch: {
     multiSort(newVal) {
-      if (newVal === false && this.sortOrder.length > 1) {
-        this.sortOrder.splice(1);
+      if (newVal === false && this.sortOrderData.length > 1) {
+        this.sortOrderData.splice(1);
         this.loadData();
       }
     },
@@ -605,8 +591,12 @@ export default {
 
   methods: {
     updateOrder() {
-      this.tableData.forEach((item, index) => (item.order = this.minimumOrder + index));
-      return axios.post(this.dragApi, { data: Object.assign({}, this.tableData) });
+      this.tableData.forEach(
+        (item, index) => (item.order = this.minimumOrder + index)
+      );
+      return axios.post(this.dragApi, {
+        data: Object.assign({}, this.tableData)
+      });
     },
     getScrollBarWidth() {
       const outer = document.createElement("div");
@@ -633,7 +623,7 @@ export default {
       const horizontal = e.currentTarget.scrollLeft;
 
       //don't modify header scroll if we are scrolling vertically
-      if (horizontal != this.lastScrollPosition) {
+      if (horizontal !== this.lastScrollPosition) {
         const header = this.$el.getElementsByClassName(
           "vuetable-head-wrapper"
         )[0];
@@ -645,7 +635,7 @@ export default {
     },
 
     mergeCss() {
-      this.customCss = { ...CssSemanticUI.table, ...this.css };
+      this.customCss = { ...VuetableCss.table, ...this.css };
     },
 
     bodyClass(base, field) {
@@ -712,10 +702,12 @@ export default {
       if (data === null || typeof data === "undefined") return;
 
       this.fireEvent("loading");
+      this.loading = true
 
       if (Array.isArray(data)) {
         this.tableData = data;
         this.fireEvent("loaded");
+        this.loading = false
         return;
       }
 
@@ -731,6 +723,7 @@ export default {
         this.updateHeader();
         this.fireEvent("pagination-data", this.tablePagination);
         this.fireEvent("loaded");
+        this.loading = false
       });
     },
 
@@ -808,18 +801,18 @@ export default {
       }
 
       this.fireEvent("loading");
+      this.loading = true
 
       const queryParams = this.getAllQueryParams();
-      const allParams = {
+
+      this.httpOptions["params"] = {
         ...this.getAppendParams(queryParams),
         ...initialParams
       };
 
-      this.httpOptions["params"] = allParams;
-
       return this.fetch(this.apiUrl, this.httpOptions)
-        .then(successCb)
-        .catch(e => failedCb(e));
+                 .then(successCb)
+                 .catch(e => failedCb(e));
     },
 
     fetch(apiUrl, httpOptions) {
@@ -851,16 +844,16 @@ export default {
         null
       );
 
-      this.minimumOrder = this.tableData[0].order;
+      this.minimumOrder = this.tableData.length ? this.tableData[0].order : this.minimumOrder;
 
       if (this.tablePagination === null) {
         this.warn(
           'vuetable: pagination-path "' +
-            this.paginationPath +
-            '" not found. ' +
-            "It looks like the data returned from the server does not have pagination information " +
-            "or you may have set it incorrectly.\n" +
-            'You can explicitly suppress this warning by setting pagination-path="".'
+          this.paginationPath +
+          '" not found. ' +
+          "It looks like the data returned from the server does not have pagination information " +
+          "or you may have set it incorrectly.\n" +
+          'You can explicitly suppress this warning by setting pagination-path="".'
         );
       }
 
@@ -869,6 +862,7 @@ export default {
         this.updateHeader();
         this.fireEvent("pagination-data", this.tablePagination);
         this.fireEvent("loaded");
+        this.loading = false
       });
     },
 
@@ -899,6 +893,7 @@ export default {
       console.error("load-error", response);
       this.fireEvent("load-error", response);
       this.fireEvent("loaded");
+      this.loading = false
     },
 
     fireEvent() {
@@ -924,7 +919,7 @@ export default {
 
       if (typeof this.queryParams === "function") {
         params = this.queryParams(
-          this.sortOrder,
+          this.sortOrderData,
           this.currentPage,
           this.perPage
         );
@@ -940,23 +935,23 @@ export default {
     },
 
     getSortParam() {
-      if (!this.sortOrder || this.sortOrder.field == "") {
+      if (!this.sortOrderData || this.sortOrderData.field == "") {
         return "";
       }
 
       if (typeof this.sortParams === "function") {
-        return this.sortParams(this.sortOrder);
+        return this.sortParams(this.sortOrderData);
       }
 
       return this.getDefaultSortParam();
     },
 
     getDefaultSortParam() {
-      return this.sortOrder.map(item => `${item.sortField}`).join(",");
+      return this.sortOrderData.map(item => `${item.sortField}`).join(",");
     },
 
     getOrderParam() {
-      return this.sortOrder[0] ? this.sortOrder[0].direction : null;
+      return this.sortOrderData[0] ? this.sortOrderData[0].direction : null;
     },
 
     getAppendParams(params) {
@@ -976,7 +971,7 @@ export default {
         return false;
       }
 
-      for (let i = 0; i < this.sortOrder.length; i++) {
+      for (let i = 0; i < this.sortOrderData.length; i++) {
         if (this.fieldIsInSortOrderPosition(field, i)) {
           return i;
         }
@@ -987,8 +982,8 @@ export default {
 
     fieldIsInSortOrderPosition(field, i) {
       return (
-        // this.sortOrder[i].field === field.name &&
-        this.sortOrder[i].sortField === field.sortField
+        // this.sortOrderData[i].field === field.name &&
+        this.sortOrderData[i].sortField === field.sortField
       );
     },
 
@@ -1012,7 +1007,7 @@ export default {
     },
 
     addSortColumn(field) {
-      this.sortOrder.push({
+      this.sortOrderData.push({
         field: field.name,
         sortField: field.sortField,
         direction: "asc"
@@ -1020,11 +1015,11 @@ export default {
     },
 
     removeSortColumn(index) {
-      this.sortOrder.splice(index, 1);
+      this.sortOrderData.splice(index, 1);
     },
 
     setSortColumnDirection(index, direction) {
-      this.sortOrder[index].direction = direction;
+      this.sortOrderData[index].direction = direction;
     },
 
     multiColumnSort(field) {
@@ -1035,7 +1030,7 @@ export default {
         this.addSortColumn(field, "asc");
       } else {
         //this field is in the sort array, now we change its state
-        if (this.sortOrder[i].direction === "asc") {
+        if (this.sortOrderData[i].direction === "asc") {
           // switch direction
           this.setSortColumnDirection(i, "desc");
         } else {
@@ -1045,28 +1040,28 @@ export default {
     },
 
     singleColumnSort(field) {
-      if (this.sortOrder.length === 0) {
+      if (this.sortOrderData.length === 0) {
         // this.clearSortOrder()
         this.addSortColumn(field, "asc");
         return;
       }
 
-      this.sortOrder.splice(1); //removes additional columns
+      this.sortOrderData.splice(1); //removes additional columns
 
       if (this.fieldIsInSortOrderPosition(field, 0)) {
         // change sort direction
-        this.sortOrder[0].direction =
-          this.sortOrder[0].direction === "asc" ? "desc" : "asc";
+        this.sortOrderData[0].direction =
+          this.sortOrderData[0].direction === "asc" ? "desc" : "asc";
       } else {
         // reset sort direction
-        this.sortOrder[0].direction = "asc";
+        this.sortOrderData[0].direction = "asc";
       }
-      this.sortOrder[0].field = field.name;
-      this.sortOrder[0].sortField = field.sortField;
+      this.sortOrderData[0].field = field.name;
+      this.sortOrderData[0].sortField = field.sortField;
     },
 
     clearSortOrder() {
-      this.sortOrder = [];
+      this.sortOrderData = [];
     },
 
     hasFormatter(item) {
@@ -1210,7 +1205,7 @@ export default {
     },
 
     normalizeSortOrder() {
-      this.sortOrder.forEach(item => {
+      this.sortOrderData.forEach(item => {
         item.sortField = item.sortField || item.field;
       });
     },
@@ -1231,7 +1226,7 @@ export default {
     },
 
     callDataManager() {
-      const result = this.dataManager(this.sortOrder, this.makePagination());
+      const result = this.dataManager(this.sortOrderData, this.makePagination());
 
       if (this.isPromiseObject(result)) {
         result.then(data => this.setData(data));
@@ -1338,8 +1333,8 @@ export default {
       if (dataItem[idColumn] === undefined) {
         this.warn(
           'checkbox field: The "' +
-            this.trackBy +
-            '" field does not exist! Make sure the field you specify in "track-by" prop does exist.'
+          this.trackBy +
+          '" field does not exist! Make sure the field you specify in "track-by" prop does exist.'
         );
         return;
       }

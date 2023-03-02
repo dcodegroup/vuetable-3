@@ -7,10 +7,11 @@ We have forked this package for the time being until the docs catch up. Credit t
 
 Below is a table outling the vue compability for the releases.
 
-| Version/Release | Vue Compatibility |
-| -----------     | -----------       |
-| 5.x.x           | 3.x.x             |
-| 4.x.x           | 2.x.x             |
+| Version/Release | Vue Compatibility | Vue Version       |
+| -----------     | -----------       | -----------       |
+| 6.x.x           | 3.x.x             | 3.x.x             |
+| 5.x.x           | 3.x.x             | 2.x.x             |
+| 4.x.x           | 2.x.x             | 2.x.x             |
 
 # Documentation and Tutorial
 
@@ -25,9 +26,14 @@ If you any question, please post your questions in the "Issues" section. Be sure
 # Usage
 ## NPM
 
-Vue 3.x.x Compatibility
+Vue 3.x.x (Ported Version, Full ESM with Vite)
 ```shell
 npm install @dcodegroup-au/vuetable-3 --save
+```
+
+Vue 3.x.x Compatibility Mode
+```shell
+npm install @dcodegroup-au/vuetable-3@5.1.0 --save
 ```
 
 Vue 2.x.x Compatibility
