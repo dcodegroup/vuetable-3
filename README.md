@@ -5,7 +5,7 @@
 We have forked this package for the time being until the docs catch up. Credit to (https://github.com/mannyyang/vuetable-3)
 ## Versioning
 
-Below is a table outling the vue compability for the releases.
+Below is a table outlining the vue compatibility for the releases.
 
 | Version/Release | Vue Compatibility | Vue Version       |
 | -----------     | -----------       | -----------       |
