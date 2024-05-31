@@ -462,7 +462,7 @@ export default {
       minimumOrder: 0,
       loading: false,
       sortOrderData: this.sortOrder,
-      axiosController: new AbortController(),
+      axiosController: null,
     };
   },
 
@@ -812,13 +812,16 @@ export default {
       };
 
       return this.fetch(this.apiUrl, this.httpOptions)
-                 .then(successCb)
-                 .catch(e => failedCb(e));
+        .then(successCb)
+        .catch(e => failedCb(e));
     },
 
     cancel() {
+      console.log('called cancel');
       if (this.axiosController) {
+        console.log('got into if to call abort');
         this.axiosController.abort();
+        this.axiosController = null;
       }
     },
 
@@ -827,7 +830,9 @@ export default {
         return this.httpFetch(apiUrl, httpOptions);
       }
 
-      httpOptions.signal = this.axiosController.signal;
+      const controller = new AbortController();
+      httpOptions.signal = controller.signal;
+      this.axiosController = controller;
       if (this.httpMethod === "get") {
         return axios.get(apiUrl, httpOptions);
       } else {
@@ -1387,11 +1392,13 @@ export default {
     },
 
     reload() {
+      console.log('call reload so should cancel');
       this.cancel(); // cancel current request
       return this.loadData();
     },
 
     refresh() {
+      console.log('call refresh so should cancel');
       this.cancel(); // cancel current request
       this.currentPage = this.firstPage;
       return this.loadData();
