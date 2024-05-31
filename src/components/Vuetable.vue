@@ -818,7 +818,7 @@ export default {
 
     cancel() {
       if (this.request) {
-        this.request.cancel();
+        this.request.abort();
       }
     },
 
@@ -827,8 +827,9 @@ export default {
         return this.httpFetch(apiUrl, httpOptions);
       }
 
-      const axiosSource = axios.CancelToken.source();
-      httpOptions.cancelToken = axiosSource.token;
+      const controller = new AbortController();
+
+      httpOptions.signal = controller.signal;
       this.request = httpOptions;
       if (this.httpMethod === "get") {
         return axios.get(apiUrl, httpOptions);
