@@ -817,7 +817,7 @@ export default {
     },
 
     cancel() {
-      if (this.request) {
+      if (this.axiosController) {
         this.axiosController.abort();
       }
     },
@@ -828,7 +828,6 @@ export default {
       }
 
       httpOptions.signal = this.axiosController.signal;
-      this.request = httpOptions;
       if (this.httpMethod === "get") {
         return axios.get(apiUrl, httpOptions);
       } else {
