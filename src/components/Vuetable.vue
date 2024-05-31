@@ -817,9 +817,7 @@ export default {
     },
 
     cancel() {
-      console.log('called cancel');
       if (this.axiosController) {
-        console.log('got into if to call abort');
         this.axiosController.abort();
         this.axiosController = null;
       }
@@ -829,6 +827,8 @@ export default {
       if (this.httpFetch) {
         return this.httpFetch(apiUrl, httpOptions);
       }
+
+      this.cancel();
 
       const controller = new AbortController();
       httpOptions.signal = controller.signal;
@@ -1392,14 +1392,10 @@ export default {
     },
 
     reload() {
-      console.log('call reload so should cancel');
-      this.cancel(); // cancel current request
       return this.loadData();
     },
 
     refresh() {
-      console.log('call refresh so should cancel');
-      this.cancel(); // cancel current request
       this.currentPage = this.firstPage;
       return this.loadData();
     },
