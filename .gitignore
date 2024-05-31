@@ -2,8 +2,8 @@
 node_modules
 /dist
 storybook-static
-.package-lock.json
-.yarn.lock
+package-lock.json
+yarn.lock
 
 /tests/e2e/videos/
 /tests/e2e/screenshots/
