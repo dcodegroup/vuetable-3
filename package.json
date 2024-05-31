@@ -119,7 +119,7 @@
     }
   },
   "bugs": {
-    "url": "https://github.com/dcodegroup/vuetable-3/issues"
+    "url": "https://github.com/DCODE-GROUP/vuetable-3/issues"
   },
   "engines": {
     "node": ">= 4.0.0",
@@ -128,7 +128,7 @@
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
-  "homepage": "https://github.com/dcodegroup/vuetable-3#readme",
+  "homepage": "https://github.com/DCODE-GROUP/vuetable-3#readme",
   "keywords": [
     "vue",
     "component",
@@ -146,7 +146,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dcodegroup/vuetable-3.git"
+    "url": "git+https://github.com/DCODE-GROUP/vuetable-3.git"
   },
   "directories": {
     "doc": "docs",
