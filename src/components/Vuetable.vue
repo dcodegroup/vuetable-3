@@ -462,7 +462,7 @@ export default {
       minimumOrder: 0,
       loading: false,
       sortOrderData: this.sortOrder,
-      request: null,
+      axiosController: new AbortController(),
     };
   },
 
@@ -818,7 +818,7 @@ export default {
 
     cancel() {
       if (this.request) {
-        this.request.abort();
+        this.axiosController.abort();
       }
     },
 
@@ -827,9 +827,7 @@ export default {
         return this.httpFetch(apiUrl, httpOptions);
       }
 
-      const controller = new AbortController();
-
-      httpOptions.signal = controller.signal;
+      httpOptions.signal = this.axiosController.signal;
       this.request = httpOptions;
       if (this.httpMethod === "get") {
         return axios.get(apiUrl, httpOptions);
