@@ -462,6 +462,7 @@ export default {
       minimumOrder: 0,
       loading: false,
       sortOrderData: this.sortOrder,
+      request: null,
     };
   },
 
@@ -815,11 +816,20 @@ export default {
                  .catch(e => failedCb(e));
     },
 
+    cancel() {
+      if (this.request) {
+        this.request.cancel();
+      }
+    },
+
     fetch(apiUrl, httpOptions) {
       if (this.httpFetch) {
         return this.httpFetch(apiUrl, httpOptions);
       }
 
+      const axiosSource = axios.CancelToken.source();
+      httpOptions.cancelToken = axiosSource.token;
+      this.request = httpOptions;
       if (this.httpMethod === "get") {
         return axios.get(apiUrl, httpOptions);
       } else {
@@ -1379,10 +1389,12 @@ export default {
     },
 
     reload() {
+      this.cancel(); // cancel current request
       return this.loadData();
     },
 
     refresh() {
+      this.cancel(); // cancel current request
       this.currentPage = this.firstPage;
       return this.loadData();
     },
