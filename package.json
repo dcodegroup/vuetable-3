@@ -28,8 +28,8 @@
     "test": "jest"
   },
   "main": "dist/vuetable-3.umd.js",
-  "dependencies": {
-    "axios": "1.6.0",
+  "peerDependencies": {
+    "axios": "^1.6.0",
     "vuedraggable-es": "^4.1.1"
   },
   "devDependencies": {
