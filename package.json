@@ -29,7 +29,7 @@
   },
   "main": "dist/vuetable-3.umd.js",
   "peerDependencies": {
-    "axios": "^1.6.0",
+    "axios": "^1.7.4",
     "vuedraggable-es": "^4.1.1"
   },
   "devDependencies": {
