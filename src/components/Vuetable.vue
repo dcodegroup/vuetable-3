@@ -53,7 +53,7 @@
           <template v-for="(item, itemIndex) in tableData">
             <tr
               :item-index="itemIndex"
-              :key="itemIndex"
+              :key="trackBy ? item[trackBy] : itemIndex"
               :class="onRowClass(item, itemIndex)"
               @click="onRowClicked(item, itemIndex, $event)"
               @dblclick="onRowDoubleClicked(item, itemIndex, $event)"
