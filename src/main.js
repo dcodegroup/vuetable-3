@@ -191,110 +191,7 @@ const langDefault = {
   birthdate: "Birthdate"
 };
 
-const dataFields = [
-  {
-    name: CustomCell,
-    title: "custom cell",
-    sortField: "name"
-  },
-  {
-    name: "__handle",
-    width: "40px"
-  },
-  {
-    name: "__sequence",
-    title: "No.",
-    width: "50px",
-    titleClass: "right aligned",
-    dataClass: "right aligned"
-  },
-  {
-    name: "__checkbox",
-    width: "30px",
-    title: "checkbox",
-    titleClass: "center aligned",
-    dataClass: "center aligned"
-  },
-  {
-    name: "id",
-    title: '<i class="unordered list icon"></i> Detail',
-    width: "80px",
-    dataClass: "center aligned",
-    formatter: (value, vuetable) => {
-      const icon = vuetable.isVisibleDetailRow(value) ? "down" : "right";
-      return [
-        '<a class="show-detail-row">',
-        '<i class="chevron circle ' + icon + ' icon"></i>',
-        "</a>"
-      ].join("");
-    }
-  },
-  {
-    name: "name",
-    title: '<i class="book icon"></i> Full Name',
-    sortField: "name",
-    width: "150px",
-    filterable: true
-  },
-  {
-    name: "email",
-    title: '<i class="mail outline icon"></i> Email',
-    sortField: "email",
-    width: "200px",
-    visible: true,
-    filterable: true
-  },
-  {
-    name: "nickname",
-    title: (nameOnly = false) => {
-      return nameOnly
-        ? langDefault["nickname"]
-        : `<i class="paw icon"></i> ${langDefault["nickname"]}`;
-    },
-    sortField: "nickname",
-    width: "120px",
-    formatter: value => {
-      return value.toUpperCase();
-    },
-    filterable: true
-  },
-  {
-    name: "birthdate",
-    title: (nameOnly = false) => {
-      return nameOnly
-        ? langDefault["birthdate"]
-        : `<i class="orange birthday icon"></i> ${langDefault["birthdate"]}`;
-    },
-    width: "100px",
-    sortField: "birthdate",
-    formatter: value => {
-      if (value === null) return "";
-      return moment(value, "YYYY-MM-DD").format("D MMM YYYY");
-    },
-    filterable: true
-  },
-  {
-    name: "gender",
-    title: "Gender",
-    sortField: "gender",
-    width: "100px",
-    titleClass: "center aligned",
-    dataClass: "center aligned",
-    formatter: value => {
-      return value === "M"
-        ? '<span class="ui teal label"><i class="male icon"></i>Male</span>'
-        : '<span class="ui pink label"><i class="female icon"></i>Female</span>';
-    },
-    filterable: true
-  },
-  {
-    name: "slot-actions",
-    title: "Actions",
-    width: "140px",
-    titleClass: "center aligned",
-    dataClass: "center aligned"
-  }
-];
+const dataFields = ["__checkbox","name", "email", "phone"];
 
 const mainTemplate = `
 <div class="ui vertical segment">
@@ -307,64 +204,15 @@ const mainTemplate = `
             <h3 class="ui header">List of Users</h3>
 
             <div class="ui grid">
-                <div class="ui left aligned nine wide column">
-                    <div class="ui labeled icon input">
-                      <div class="ui label">Search:</div>
-                      <input v-model="searchFor" class="ui input" @keyup.enter="setFilter">
-                      <i class="search icon"></i>
-                    </div>
-                    <button class="ui button primary" @click="setFilter">Go</button>
-                    <button class="ui button" @click="resetFilter">Reset</button>
-                </div>
-                <div class="ui right aligned seven wide column">
-                  <button class="ui basic button" id="settingsBtn" @click="showSettingsModal">
-                    <i class="setting icon"></i>
-                    Settings
-                  </button>
-                </div>
+                <vuetable
+                  api-url="https://my-json-server.typicode.com/mannyyang/vuetable-3/users"
+                  pagination-path=""
+                  data-path=""
+                  :fields="fields"
+                >
+                </vuetable>
             </div><!-- ui grid -->
 
-            <div :class="[{'vuetable-wrapper ui basic segment': true}, loading]">
-
-              <vuetable ref="vuetable"
-                api-url="http://vuetable.ratiw.net/api/users"
-                :fields="fields"
-                :table-height="tableHeight"
-                :transform="transform"
-                pagination-path="pagination"
-                :sort-order="sortOrder"
-                :multi-sort="multiSort"
-                :per-page="perPage"
-                :append-params="moreParams"
-                detail-row-component="my-detail-row"
-                detail-row-transition="expand"
-                :row-class="rowClassCB"
-                @vuetable:pagination-data="onPaginationData"
-                @vuetable:load-success="onLoadSuccess"
-                @vuetable:loading="showLoader"
-                @vuetable:loaded="hideLoader"
-                @vuetable:cell-clicked="onCellClicked"
-                @vuetable:initialized="onInitialized"
-                @vuetable:data-reset="onDataReset"
-                @vuetable:field-event="onFieldEvent"
-                @vuetable:header-event="onHeaderEvent"
-              >
-                <div slot="slot-actions" slot-scope="props">
-                  <button class="ui red button" @click="onActionClicked('view-item', props.rowData)"><i class="zoom icon"></i></button>
-                  <button class="ui blue button" @click="onActionClicked('edit-item', props.rowData)"><i class="edit icon"></i></button>
-                  <button class="ui green button" @click="onActionClicked('delete-item', props.rowData)"><i class="delete icon"></i></button>
-                </div>
-              </vuetable>
-              <div class="vuetable-pagination ui bottom attached segment grid">
-                <vuetable-pagination-info ref="paginationInfo"
-                  :info-template="paginationInfoTemplate"
-                ></vuetable-pagination-info>
-                <component :is="paginationComponent" ref="pagination"
-                  @vuetable-pagination:change-page="onChangePage"
-                ></component>
-              </div>
-
-            </div><!-- vuetable-wrapper -->
 
             <settings-modal ref="settingsModal"
               :vuetable-fields="vuetableFields"

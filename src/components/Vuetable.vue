@@ -75,10 +75,11 @@
               <template v-if="field.visible">
                 <template v-if="isFieldComponent(field.name)">
                   <component
-                    :is="field.name.substr(25)"
+                    :is="field.name.startsWith('vuetable-field') ? field.name : field.name.substr(25)"
                     :row-data="item"
                     :row-index="itemIndex"
                     :row-field="field"
+                    :vuetable="vuetable"
                     :class="bodyClass('vuetable-component', field)"
                     :style="{ width: field.width }"
                     @vuetable:field-event="onFieldEvent"
@@ -166,10 +167,11 @@
                 <template v-if="field.visible">
                   <template v-if="isFieldComponent(field.name)" :key="fieldIndex">
                     <component
-                      :is="field.name.substr(25)"
+                      :is="field.name.startsWith('vuetable-field') ? field.name : field.name.substr(25)"
                       :row-data="element"
                       :row-index="element.id"
                       :row-field="field"
+                      :vuetable="vuetable"
                       :class="bodyClass('vuetable-component', field)"
                       :style="{ width: field.width }"
                       @vuetable:field-event="onFieldEvent"
@@ -232,6 +234,7 @@
 import axios from "axios";
 import VuetableRowHeader from "./VuetableRowHeader.vue";
 import VuetableColGroup from "./VuetableColGroup.vue";
+import VuetableFieldCheckbox from "./VuetableFieldCheckbox.vue";
 // import CssSemanticUI from "./VuetableCssSemanticUI.js";
 import VuetableCss from "./VuetableCssTailwindUI.js";
 import draggable from "vuedraggable-es";
@@ -240,6 +243,7 @@ export default {
   name: "Vuetable",
 
   components: {
+    VuetableFieldCheckbox,
     VuetableRowHeader,
     VuetableColGroup,
     draggable
