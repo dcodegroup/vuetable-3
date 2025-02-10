@@ -19,9 +19,11 @@ export default {
       type: String,
       default: ""
     },
-    vuetable: {
-      type: Object,
-      default: null
+  },
+  computed: {
+    vuetable() {
+      //cover for both header and row
+      return this.$parent.vuetable || this.$parent.$parent.vuetable;
     }
   }
 };

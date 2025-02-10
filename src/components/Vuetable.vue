@@ -75,11 +75,10 @@
               <template v-if="field.visible">
                 <template v-if="isFieldComponent(field.name)">
                   <component
-                    :is="field.name.startsWith('vuetable-field') ? field.name : field.name.substr(25)"
+                    :is="field.name.includes('v-table') ? field.name.substr(25) : field.name"
                     :row-data="item"
                     :row-index="itemIndex"
                     :row-field="field"
-                    :vuetable="vuetable"
                     :class="bodyClass('vuetable-component', field)"
                     :style="{ width: field.width }"
                     @vuetable:field-event="onFieldEvent"
@@ -167,11 +166,10 @@
                 <template v-if="field.visible">
                   <template v-if="isFieldComponent(field.name)" :key="fieldIndex">
                     <component
-                      :is="field.name.startsWith('vuetable-field') ? field.name : field.name.substr(25)"
+                      :is="field.name.includes('v-table') ? field.name.substr(25) : field.name"
                       :row-data="element"
                       :row-index="element.id"
                       :row-field="field"
-                      :vuetable="vuetable"
                       :class="bodyClass('vuetable-component', field)"
                       :style="{ width: field.width }"
                       @vuetable:field-event="onFieldEvent"
