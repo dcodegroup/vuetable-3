@@ -2,7 +2,7 @@
   <tr>
     <template v-for="(field, fieldIndex) in vuetable.tableFields">
       <template v-if="field.visible">
-        <template v-if="vuetable.isFieldComponent(field.name)">
+        <template v-if="vuetable.isFieldComponent(field.name) && !field.name.includes('v-table')">
           <component
             :is="field.name"
             :row-field="field"
