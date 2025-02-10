@@ -1,15 +1,47 @@
 <template>
   <tr>
     <template v-for="(field, fieldIndex) in vuetable.tableFields">
-      <th
-        v-if="field.visible"
-        @click="onColumnHeaderClicked(field, $event)"
-        :key="fieldIndex"
-        :id="'_' + field.name"
-        :class="headerClass('vuetable-th', field)"
-        :style="{ width: field.width }"
-        v-html="renderTitle(field)"
-      ></th>
+      <template v-if="field.visible">
+        <template v-if="vuetable.isFieldComponent(field.name)">
+          <component
+            :is="field.name"
+            :row-field="field"
+            :is-header="true"
+            :title="renderTitle(field)"
+            :vuetable="vuetable"
+            :key="fieldIndex"
+            :class="headerClass('vuetable-th-component', field)"
+            :style="{ width: field.width }"
+            @vuetable:header-event="vuetable.onHeaderEvent"
+            @click="onColumnHeaderClicked(field, $event)"
+          >
+            <component
+              :is="getSortComponent(field).component"
+              v-bind="getSortComponent(field).props"
+              v-if="getSortComponent(field)"
+            />
+          </component>
+        </template>
+        <template v-else-if="vuetable.isFieldSlot(field.name)">
+          <th
+            :class="headerClass('vuetable-th-slot', field)"
+            :key="fieldIndex"
+            :style="{ width: field.width }"
+            v-html="renderTitle(field)"
+            @click="onColumnHeaderClicked(field, $event)"
+          ></th>
+        </template>
+        <template v-else>
+          <th
+            @click="onColumnHeaderClicked(field, $event)"
+            :key="fieldIndex"
+            :id="'_' + field.name"
+            :class="headerClass('vuetable-th', field)"
+            :style="{ width: field.width }"
+            v-html="renderTitle(field)"
+          ></th>
+        </template>
+      </template>
     </template>
     <vuetable-col-gutter v-if="vuetable.scrollVisible" />
   </tr>
@@ -17,11 +49,17 @@
 <script>
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable prefer-const */
+import VuetableFieldCheckbox from "./VuetableFieldCheckbox.vue";
+import VuetableFieldHandle from "./VuetableFieldHandle.vue";
+import VuetableFieldSequence from "./VuetableFieldSequence.vue";
 import VuetableColGutter from "./VuetableColGutter.vue";
 import VuetableCss from "./VuetableCssTailwindUI.js";
 
 export default {
   components: {
+    "vuetable-field-checkbox": VuetableFieldCheckbox,
+    "vuetable-field-handle": VuetableFieldHandle,
+    "vuetable-field-sequence": VuetableFieldSequence,
     VuetableColGutter
   },
 
@@ -38,7 +76,12 @@ export default {
       return this.$parent;
     }
   },
+
   methods: {
+    stripPrefix(name) {
+      return name.replace(this.vuetable.fieldPrefix, "");
+    },
+
     headerClass(base, field) {
       return [
         base + "-" + this.toSnakeCase(field.name),
@@ -85,6 +128,31 @@ export default {
       }
 
       return cls;
+    },
+
+    // Allow ability to render a vue component for the sort icon.
+    getSortComponent(field) {
+      const i = this.currentSortOrderPosition(field);
+      const sortCompFunc = this.css.renderSortComp;
+      if (!sortCompFunc) {
+        return;
+      }
+
+      if (i !== false) {
+        return {
+          component: sortCompFunc,
+          props: {
+            order: this.sortOrder[i].direction == "asc" ? "asc" : "desc"
+          }
+        };
+      }
+
+      return {
+        component: sortCompFunc,
+        props: {
+          order: "sortable"
+        }
+      };
     },
 
     isInCurrentSortGroup(field) {
