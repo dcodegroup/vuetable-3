@@ -8,7 +8,6 @@
             :row-field="field"
             :is-header="true"
             :title="renderTitle(field)"
-            :vuetable="vuetable"
             :key="fieldIndex"
             :class="headerClass('vuetable-th-component', field)"
             :style="{ width: field.width }"
