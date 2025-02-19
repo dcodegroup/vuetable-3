@@ -670,6 +670,7 @@ export default {
         formatter: null,
         visible: true,
         width: null,
+        headerComponent: null,
         $_index: index
       };
 

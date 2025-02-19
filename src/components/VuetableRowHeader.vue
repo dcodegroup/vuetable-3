@@ -2,9 +2,9 @@
   <tr>
     <template v-for="(field, fieldIndex) in vuetable.tableFields">
       <template v-if="field.visible">
-        <template v-if="vuetable.isFieldComponent(field.name) && !field.name.includes('v-table')">
+        <template v-if="field.headerComponent">
           <component
-            :is="field.name"
+            :is="field.headerComponent"
             :row-field="field"
             :is-header="true"
             :title="renderTitle(field)"
