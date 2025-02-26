@@ -75,7 +75,7 @@
               <template v-if="field.visible">
                 <template v-if="isFieldComponent(field.name)">
                   <component
-                    :is="field.name.includes('v-table') ? field.name.substr(25) : field.name"
+                    :is="field.name.includes('vuetable-field') ? field.name : field.name.substr(25)"
                     :row-data="item"
                     :row-index="itemIndex"
                     :row-field="field"
@@ -166,7 +166,7 @@
                 <template v-if="field.visible">
                   <template v-if="isFieldComponent(field.name)" :key="fieldIndex">
                     <component
-                      :is="field.name.includes('v-table') ? field.name.substr(25) : field.name"
+                      :is="field.name.includes('vuetable-field') ? field.name : field.name.substr(25)"
                       :row-data="element"
                       :row-index="element.id"
                       :row-field="field"
